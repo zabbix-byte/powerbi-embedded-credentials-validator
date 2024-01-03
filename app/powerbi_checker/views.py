@@ -78,6 +78,9 @@ def main(request):
             if 'client_secret' in info or 'client_assertion' in info or 'AADSTS7000216' in info:
                 client_secret_error = True
 
+            if 'tenant' in info or 'AADSTS90019' in info:
+                tenant_error = True
+
         return render(request, 'main.html', {'info': info,
                                              'workspace_id': workspace_id,
                                              'report_id': report_id,
