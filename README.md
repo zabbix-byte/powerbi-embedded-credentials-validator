@@ -1,4 +1,4 @@
-<h2><strong>Embedded</strong> Credentials Validator (CUSTOMERS)</h2>
+<h2>Powerbi Embedded Credentials Validator (CUSTOMERS)</h2>
 
 ![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fzabbix-byte%2Fpowerbi-embedded-credentials-validator%2F&countColor=%23263759)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge&logo=windows&logoColor=white)](https://opensource.org/licenses/MIT)
