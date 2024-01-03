@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="card bg-light border-0 shadow">
+      <div class="card-body">
+        <h2 class="card-title mb-4 text-center"><strong class="text-warning">Embedded</strong> Credentials Validator (CUSTOMERS)</h2>
+        <form method="post">
+          {% csrf_token %}
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="workspaceId" class="form-label">WORKSPACE_ID</label>
+              <input type="text" class="form-control" name="workspaceId" {% if report_id_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} id="workspaceId" value="{{ workspace_id }}" placeholder="Enter WORKSPACE_ID" required />
+            </div>
+            <div class="col-md-6">
+              <label for="reportId" class="form-label">REPORT_ID</label>
+              <input type="text" class="form-control" name="reportId" {% if report_id_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} value="{{ report_id }}" id="reportId" placeholder="Enter REPORT_ID" required />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="tenantId" class="form-label">TENANT_ID</label>
+              <input type="text" class="form-control" name="tenantId" {% if tenant_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} id="tenantId" value="{{ tenant }}" placeholder="Enter TENANT_ID" required />
+            </div>
+            <div class="col-md-6">
+              <label for="clientId" class="form-label">CLIENT_ID</label>
+              <input type="text" class="form-control" name="clientId" {% if client_id_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} id="clientId" value="{{ client_id }}" placeholder="Enter CLIENT_ID" required />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="clientSecret" class="form-label">CLIENT_SECRET</label>
+              <input type="text" class="form-control" name="clientSecret" {% if client_secret_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} id="clientSecret" value="{{ secret }}" placeholder="Enter CLIENT_SECRET" />
+            </div>
+            <div class="col-md-6">
+              <label for="scopeBase" class="form-label">SCOPE_BASE</label>
+              <input type="text" class="form-control" name="scopeBase" {% if scope_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} id="scopeBase" value="{{ scope }}" placeholder="Enter SCOPE_BASE (comma-separated)" value="" required />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="authorityUrl" class="form-label">AUTHORITY_URL</label>
+              <input type="text" class="form-control" name="authorityUrl" id="authorityUrl" {% if authority_url_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} value="{{ authority_url }}" placeholder="Enter AUTHORITY_URL" value="" required />
+            </div>
+            <div class="col-md-6">
+              <label for="powerBiUser" class="form-label">POWER_BI_USER</label>
+              <input type="text" class="form-control" name="powerBiUser" id="powerBiUser" {% if powerbi_user_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} value="{{ powerbi_user }}" placeholder="Enter POWER_BI_USER" />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="powerBiPass" class="form-label">POWER_BI_PASS</label>
+              <input type="password" class="form-control" name="powerBiPass" id="powerBiPass" {% if powerbi_pass_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} value="{{ powerbi_pass }}" placeholder="Enter POWER_BI_PASS" />
+            </div>
+            <div class="col-md-6">
+              <label for="workspaceId" class="form-label">AUTHENTICATION_MODE</label>
+              <input type="text" class="form-control" name="authenticationMode" {% if auth_mode_error == True %} style="background-color: #f5c2c7;color: #842029;" {% endif %} id="authenticationMode" placeholder="Enter AUTHENTICATION_MODE" value="{{ auth_mode }}" required />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-outline-dark btn-lg" style="margin-bottom: 10px;">Check</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% if info != '' %}
+    <div class="container mt-5">
+      <div class="card bg-light border-0 shadow">
+        {% if error == False %}
+          <div class="alert alert-success"  style="border-radius: 0;" role="alert">All works properly.</div>
+        {% else %}
+          <div class="alert alert-danger" style="border-radius: 0;" role="alert">Some problems with the credentials.</div>
+        {% endif %}
+        <div class="card-body">
+          {% if error == False %}
+            <section id="report-container" style="height: 600px;" class="embed-container"></section>
+            <input id="value_of_info" value="{{ info }}" style="display: none;" />
+          {% else %}
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea1" class="form-label">DESCRIPTION</label>
+              <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">{{ info }}</textarea>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% if error == False %}
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/powerbi-client/2.15.1/powerbi.min.js" integrity="sha512-OWIl8Xrlo8yQjWN5LcMz5SIgNnzcJqeelChqPMIeQGnEFJ4m1fWWn668AEXBrKlsuVbvDebTUJGLRCtRCCiFkg==" crossorigin="anonymous"></script>
+      <script>
+        $(document).ready(function () {
+          var reportContainer = $('#report-container').get(0)
+        
+          // Initialize iframe for embedding report
+          powerbi.bootstrap(reportContainer, { type: 'report' })
+        
+          var models = window['powerbi-client'].models
+          var reportLoadConfig = {
+            type: 'report',
+            tokenType: models.TokenType.Embed
+        
+            // Enable this setting to remove gray shoulders from embedded report
+            // settings: {
+            //     background: models.BackgroundType.Transparent
+            // }
+          }
+        
+          embedData = $.parseJSON($('#value_of_info').val())
+        
+          console.log(embedData)
+          reportLoadConfig.accessToken = embedData.accessToken
+        
+          // You can embed different reports as per your need
+          reportLoadConfig.embedUrl = embedData.reportConfig[0].embedUrl
+        
+          // Use the token expiry to regenerate Embed token for seamless end user experience
+          // Refer https://aka.ms/RefreshEmbedToken
+          tokenExpiry = embedData.tokenExpiry
+        
+          // Embed Power BI report when Access token and Embed URL are available
+          var report = powerbi.embed(reportContainer, reportLoadConfig)
+        
+          // Triggers when a report schema is successfully loaded
+          report.on('loaded', function () {
+            console.log('Report load successful')
+          })
+        
+          // Triggers when a report is successfully embedded in UI
+          report.on('rendered', function () {
+            console.log('Report render successful')
+          })
+        
+          // Clear any other error handler event
+          report.off('error')
+        
+          // Below patch of code is for handling errors that occur during embedding
+          report.on('error', function (event) {
+            var errorMsg = event.detail
+        
+            // Use errorMsg variable to log error in any destination of choice
+            console.error(errorMsg)
+            return
+          })
+        })
+      </script>
+    {% endif %}
+  {% endif %}
+{% endblock %}
